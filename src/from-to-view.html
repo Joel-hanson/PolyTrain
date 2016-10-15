@@ -1,7 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
 <link rel="import" href="/src/train-list.html">
@@ -12,7 +14,7 @@
             display: block;
         }
         
-        paper-input,
+        vaadin-combo-box,paper-input,
         paper-date-picker {
             margin: 5px;
         }
@@ -22,7 +24,7 @@
                 display: flex;
                 flex-wrap: wrap;
             }
-            paper-input,
+            vaadin-combo-box,paper-input,
             paper-date-picker {
                 flex-grow: 1;
                 min-width: 25%;
@@ -49,8 +51,8 @@
             padding: 0;
         }
         </style>
-        <paper-dialog id="dialog" modal class="paper-date-picker-dialog" on-iron-overlay-closed="_dismissDialog" >
-            <paper-date-picker id="picker" min-date="[[today]]" date="[[date]]"></paper-date-picker>
+        <paper-dialog id="dialog" modal class="paper-date-picker-dialog" on-iron-overlay-closed="_dismissDialog">
+            <paper-date-picker id="picker" min-date="October 16, 2016" date="[[date]]"></paper-date-picker>
             <div class="buttons">
                 <paper-button dialog-dismiss>Cancel</paper-button>
                 <paper-button dialog-confirm>OK</paper-button>
@@ -58,19 +60,37 @@
         </paper-dialog>
         <div class="card">
             <div class="container">
-                <paper-input label="from" value="{{from}}"></paper-input>
-                <paper-input label="to" value="{{to}}"></paper-input>
+                <vaadin-combo-box label="From" value="{{from}}" items="{{stationJSON}}"></vaadin-combo-box>
+                <vaadin-combo-box label="To" value="{{to}}" items="{{stationJSON}}"></vaadin-combo-box>
+               <!--  <paper-input label="from" value="{{from}}"></paper-input>
+                <paper-input label="to" value="{{to}}"></paper-input> -->
                 <!--   <vaadin-date-picker initialPosition="2016-10-15" min="2016-10-15" label="Pick a date" value="{{date}}"></vaadin-date-picker> -->
                 <paper-input readonly label="date" value="{{_dateFormat(date, 'LL')}}" on-click="_showDialog"></paper-input>
             </div>
             <paper-button raised class="custom blue" on-click="_find">Find</paper-button>
         </div>
         <train-list from="[[lfrom]]" to="[[lto]]" date="[[ldate]]"></train-list>
+        <iron-ajax auto url="../station_list2.json" handle-as="json" last-response="{{stationJSON}}" on-response="_stationResponse" debounce-duration="300"></iron-ajax>
     </template>
     <script>
     Polymer({
         is: 'from-to-view',
         property: {},
+        ready: function() {
+            this.today = new Date();
+            this.date = this.today;
+
+        },
+        _stationResponse: function() {
+            console.log("Asd");
+            // var xx = [];
+            // var xxx;
+            // for (x = 0; x < this.stationJSON.length; x++) {
+            //     xxx = this.stationJSON[x].station_code + " - " + this.stationJSON[x].station;
+            //     xx.push(xxx);
+            // }
+            // console.log(JSON.stringify(xx));
+        },
         _find: function() {
             this.lfrom = this.from;
             this.lto = this.to;
