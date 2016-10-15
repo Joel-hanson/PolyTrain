@@ -14,7 +14,8 @@
             display: block;
         }
         
-        vaadin-combo-box,paper-input,
+        vaadin-combo-box,
+        paper-input,
         paper-date-picker {
             margin: 5px;
         }
@@ -24,7 +25,8 @@
                 display: flex;
                 flex-wrap: wrap;
             }
-            vaadin-combo-box,paper-input,
+            vaadin-combo-box,
+            paper-input,
             paper-date-picker {
                 flex-grow: 1;
                 min-width: 25%;
@@ -60,17 +62,17 @@
         </paper-dialog>
         <div class="card">
             <div class="container">
-                <vaadin-combo-box label="From" value="{{from}}" items="{{stationJSON}}"></vaadin-combo-box>
-                <vaadin-combo-box label="To" value="{{to}}" items="{{stationJSON}}"></vaadin-combo-box>
-               <!--  <paper-input label="from" value="{{from}}"></paper-input>
+                <vaadin-combo-box id="frombox" error-message="Select boarding station" label="From" value="{{from}}" items="{{stationJSON}}"></vaadin-combo-box>
+                <vaadin-combo-box id="tobox" error-message="Select destination station" label="To" value="{{to}}" items="{{stationJSON}}"></vaadin-combo-box>
+                <!--  <paper-input label="from" value="{{from}}"></paper-input>
                 <paper-input label="to" value="{{to}}"></paper-input> -->
                 <!--   <vaadin-date-picker initialPosition="2016-10-15" min="2016-10-15" label="Pick a date" value="{{date}}"></vaadin-date-picker> -->
                 <paper-input readonly label="date" value="{{_dateFormat(date, 'LL')}}" on-click="_showDialog"></paper-input>
             </div>
             <paper-button raised class="custom blue" on-click="_find">Find</paper-button>
         </div>
-        <train-list from="[[lfrom]]" to="[[lto]]" date="[[ldate]]"></train-list>
         <iron-ajax auto url="../station_list2.json" handle-as="json" last-response="{{stationJSON}}" on-response="_stationResponse" debounce-duration="300"></iron-ajax>
+        <train-list from="[[lfrom]]" to="[[lto]]" date="[[ldate]]"></train-list>
     </template>
     <script>
     Polymer({
@@ -82,7 +84,7 @@
 
         },
         _stationResponse: function() {
-            console.log("Asd");
+            //console.log("Asd");
             // var xx = [];
             // var xxx;
             // for (x = 0; x < this.stationJSON.length; x++) {
@@ -92,9 +94,24 @@
             // console.log(JSON.stringify(xx));
         },
         _find: function() {
-            this.lfrom = this.from;
-            this.lto = this.to;
-            this.ldate = this._dateFormat(this.date, 'LL');
+            if (this.from) {this.$.frombox.invalid=false;
+                if (this.to) {this.$.tobox.invalid=false;
+                    if (this.date) {
+                        this.lfrom = this.from;
+                        this.lto = this.to;
+                        this.ldate = this._dateFormat(this.date, 'LL');
+                    }
+                    else {
+                        this.$.frombox.invalid=true;
+                    }
+                }
+                else {
+                    this.$.tobox.invalid=true;
+                }
+
+            } else {
+                this.$.frombox.invalid=true;
+            }
         },
         _showDialog: function() {
             //this.$.dialog.toggle();
