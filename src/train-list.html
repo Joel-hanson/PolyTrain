@@ -1,0 +1,107 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<dom-module id="train-list">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        
+        #sort {
+            height: 300px;
+        }
+        .thin{
+        	font-weight: 400;
+        	margin-top: 0;
+        	margin-bottom: 0;
+        }
+        </style>
+        <div class="card">
+        	
+        	<h2 class="thin">[[from]] to [[to]]</h2>
+        	<h3 class="thin">[[numTrains]] Trains on [[date]]</h3>
+            <vaadin-grid id="sort">
+                <table>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col >
+                        <col sortable>
+                        <col >
+                        <col sortable>
+                        <col sortable>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Train Number</th>
+                            <th>Train Name</th>
+                            <th>From</th>
+                            <th>Depart</th>
+                            <th>To</th>
+                            <th>Arrival</th>
+                            <th>Total Time</th>
+                        </tr>
+                    </thead>
+                </table>
+            </vaadin-grid>
+        </div>
+    </template>
+    <script>
+    Polymer({
+        is: 'train-list',
+        property:{
+        	from:{
+        		type:String
+        	},
+        	to:{
+        		type:String
+        	},
+        	date:{
+        		type:String
+        	}
+        },
+        ready: function() {
+            var grid = grid || this.$.sort;
+            var data = [
+                ['Project A', 10000, 0.8],
+                ['Project B', 87654, 0.2],
+                ['Project C', 12999, 0.6]
+            ];
+
+            grid.items = function(params, callback) {
+                callback(data.slice(params.index, params.index + params.count));
+            };
+            grid.size = data.length;
+
+            grid.addEventListener('sort-order-changed', function() {
+                var sortOrder = grid.sortOrder[0];
+                var sortProperty = sortOrder.column;
+                var sortDirection = sortOrder.direction;
+                data.sort(function(a, b) {
+                    var res;
+                    if (a[sortProperty] === b[sortProperty]) {
+                        res =  0;
+                    } else {
+                        res = (a[sortProperty] < b[sortProperty]) ? -1 : 1;
+                    }
+
+                    if ('desc' === sortDirection) {
+                        res *= -1;
+                    }
+                    return res;
+                });
+                grid.items = function(params, callback) {
+                    callback(data.slice(params.index, params.index + params.count));
+                };
+            });
+
+        }
+
+    });
+
+
+
+    // end-code
+    </script>
+</dom-module>

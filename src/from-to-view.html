@@ -1,0 +1,101 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="/src/train-list.html">
+<dom-module id="from-to-view">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        
+        paper-input,
+        paper-date-picker {
+            margin: 5px;
+        }
+        
+        @media screen and (min-width: 480px) {
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            paper-input,
+            paper-date-picker {
+                flex-grow: 1;
+                min-width: 25%;
+            }
+        }
+        
+        paper-button.blue {
+            margin-top: 15px;
+            background-color: #4285f4;
+            color: white;
+            --paper-button-raised-keyboard-focus: {
+                background-color: #4285ff !important;
+                color: white !important;
+            }
+            ;
+        }
+        
+        paper-dialog {
+            margin: 0;
+        }
+        
+        paper-date-picker {
+            margin: 0;
+            padding: 0;
+        }
+        </style>
+        <paper-dialog id="dialog" modal class="paper-date-picker-dialog" on-iron-overlay-closed="_dismissDialog" >
+            <paper-date-picker id="picker" min-date="[[today]]" date="[[date]]"></paper-date-picker>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm>OK</paper-button>
+            </div>
+        </paper-dialog>
+        <div class="card">
+            <div class="container">
+                <paper-input label="from" value="{{from}}"></paper-input>
+                <paper-input label="to" value="{{to}}"></paper-input>
+                <!--   <vaadin-date-picker initialPosition="2016-10-15" min="2016-10-15" label="Pick a date" value="{{date}}"></vaadin-date-picker> -->
+                <paper-input readonly label="date" value="{{_dateFormat(date, 'LL')}}" on-click="_showDialog"></paper-input>
+            </div>
+            <paper-button raised class="custom blue" on-click="_find">Find</paper-button>
+        </div>
+        <train-list from="[[lfrom]]" to="[[lto]]" date="[[ldate]]"></train-list>
+    </template>
+    <script>
+    Polymer({
+        is: 'from-to-view',
+        property: {},
+        _find: function() {
+            this.lfrom = this.from;
+            this.lto = this.to;
+            this.ldate = this._dateFormat(this.date, 'LL');
+        },
+        _showDialog: function() {
+            //this.$.dialog.toggle();
+            //this.$.toolbar.hidden=true;
+            var body = document.querySelector('body');
+            Polymer.dom(body).appendChild(this.$.dialog);
+            this.$.dialog.open()
+        },
+        _dateFormat: function(date, format) {
+            return moment(date).format(format);
+        },
+        _dismissDialog: function(event) {
+            if (event.detail.confirmed) {
+                this.date = this.$.picker.date;
+            }
+        },
+        _patchOverlay: function(e) {
+            if (e.target.withBackdrop) {
+                e.target.parentNode.insertBefore(e.target._backdrop, e.target);
+            }
+        }
+    });
+    </script>
+</dom-module>

@@ -18,7 +18,9 @@
     "polymer": "Polymer/polymer#^1.6.0",
     "paper-elements": "PolymerElements/paper-elements#^1.0.7",
     "paper-input": "PolymerElements/paper-input#^1.1.20",
-    "vaadin-date-picker": "^1.1.4"
+    "vaadin-date-picker": "^1.1.4",
+    "vaadin-grid": "^1.1.2",
+    "paper-date-picker": "polymer-paper-date-picker#^1.2.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
