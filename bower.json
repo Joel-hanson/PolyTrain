@@ -16,7 +16,9 @@
     "iron-selector": "PolymerElements/iron-selector#^1.0.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.1.0",
     "polymer": "Polymer/polymer#^1.6.0",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.7"
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7",
+    "paper-input": "PolymerElements/paper-input#^1.1.20",
+    "vaadin-date-picker": "^1.1.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
